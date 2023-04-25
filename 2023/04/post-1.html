@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<!--change title-->
+	<head>
+		<title>Mapping Atlanta Neighborhoods with Python</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../../assets/css/noscript.css" /></noscript>
+		<link rel="icon" href="../../icon.ico">
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+							<!-- Logo -->
+								<a href="../../index.html" class="logo">
+									<span class="symbol"><img src="../../images/logo.svg" alt="" /></span><span class="title">Lance Lu</span>
+								</a>
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="../../index.html">Home</a></li>
+							<li><a href="../../all-posts.html">All Posts</a></li>
+
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<!--change title-->
+							<h1>Mapping Atlanta Neighborhoods with Python</h1>
+							<p>Last Updated: April, 24, 2023</p>
+							<!--Insert Text-->
+							<!--Update Images-->
+							<span class="image main"><img src="../../images/pic13.jpg" alt="" /></span>
+							<p>Atlanta has over 240 neighborhoods which are grouped in 25 Neighborhood Planning Units (NPUs).
+								NPUs are "citizen advisory councils that make recommendations to the Mayor and City Council on zoning, land use, and other planning 
+								related matters" <a href = 'https://www.atlantaga.gov/government/departments/city-planning/office-of-zoning-development/neighborhood-planning-unit-npu'>[1]</a>.			
+								Let's learn a little bit more about these neighborhoods 
+								using the KML (Keyhole Markup Language) file provided by the City of Atlanta's Department of City Planning <a href = 'https://gisdata.fultoncountyga.gov/datasets/coaplangis::atlanta-neighborhoods/explore?location=33.761538%2C-84.404908%2C11.37'>[2]</a>.</p>
+							<h2>Keyhole Markup Language</h2>
+							<p>For this post, I will be using the KML file provided by the City of Atlanta.
+								Keyhole Markup Language, or KML, is a standard maintained by the Open Geospatial Consortium, Inc (OGC) 
+								to display
+								geographic data. KML is used to annotate and visualize geographic information. More information on using KML files 
+								can be found <a href = "https://developers.google.com/kml/documentation/kmlreference">here</a>.
+								The Atlanta Neighborhoods KML file has a custom schema, as shown. 19 fields are defined. For this demonstration
+								I will only be using the "SQMILES" and "NPU" fields.</p>
+							<pre><code>&lt?xml version="1.0" encoding="utf-8" ?&gt
+&ltkml xmlns="http://www.opengis.net/kml/2.2"&gt
+&ltSchema name="Atlanta_Neighborhoods" id="Atlanta_Neighborhoods"&gt
+	&ltSimpleField name="OBJECTID" type="int">&lt/SimpleField&gt
+	&ltSimpleField name="LOCALID" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="GEOTYPE" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="FULLFIPS" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="LEGALAREA" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="EFFECTDATE" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="ENDDATE" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="SRCREF" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="ACRES" type="float">&lt/SimpleField&gt
+	&ltSimpleField name="SQMILES" type="float">&lt/SimpleField&gt
+	&ltSimpleField name="OLDNAME" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="NPU" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="CREATED_USER" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="CREATED_DATE" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="LAST_EDITED_USER" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="LAST_EDITED_DATE" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="GLOBALID" type="string">&lt/SimpleField&gt
+	&ltSimpleField name="SHAPEAREA" type="float">&lt/SimpleField&gt
+	&ltSimpleField name="SHAPELEN" type="float">&lt/SimpleField&gt	
+&lt?/Schema&gt</code></pre>
+							<p>KML files contain Placemarks. Placemarks mark a position on the Earth's surface. In this file,
+								the placemarks are individual Atlanta neighborhoods. They contain the fields listed above, a name,and a
+								polygon outer boundary for each neighborhood. Here is the placemark data for Midtown, as an example.  
+							</p>
+							<pre><code>&ltPlacemark&gt
+	&ltname&gtMidtown &lt/name&gt
+	&ltStyle&gt &ltLineStyle&gt &ltcolor&gtff0000ff &lt/color&gt &lt/LineStyle&gt &ltPolyStyle&gt &ltfill&gt0 &lt/fill&gt &lt/PolyStyle&gt &lt/Style&gt
+	&ltExtendedData&gt &ltSchemaData schemaUrl="#Atlanta_Neighborhoods"&gt
+		&ltSimpleData name="OBJECTID"&gt205 &lt/SimpleData&gt
+		&ltSimpleData name="GEOTYPE"&gtNeighborhood &lt/SimpleData&gt
+		&ltSimpleData name="ACRES"&gt1048.4 &lt/SimpleData&gt
+		&ltSimpleData name="SQMILES"&gt1.64 &lt/SimpleData&gt
+		&ltSimpleData name="OLDNAME"&gtMidtown &lt/SimpleData&gt
+		&ltSimpleData name="NPU"&gtE &lt/SimpleData&gt
+		&ltSimpleData name="LAST_EDITED_USER"&gtGIS &lt/SimpleData&gt
+		&ltSimpleData name="LAST_EDITED_DATE"&gt2022/05/24 15:38:29+00 &lt/SimpleData&gt
+		&ltSimpleData name="GLOBALID"&gt{562633C6-67C7-4115-9271-3296BB64CD7F} &lt/SimpleData&gt
+		&ltSimpleData name="SHAPEAREA"&gt45668318.0819859 &lt/SimpleData&gt
+		&ltSimpleData name="SHAPELEN"&gt48934.8599914224 &lt/SimpleData&gt
+	&lt/SchemaData&gt &lt/ExtendedData&gt
+	&ltPolygon&gt &ltouterBoundaryIs&gt &ltLinearRing&gt &ltcoordinates&gt
+		-84.3863551992191,33.7973008958369 -84.3863511093318,33.7973850161323 
+		-84.3858931180985,33.7976273969386 -84.3855454474602,33.7978064108562 
+		-84.3852419375086,33.7978861867422 -84.3849403190955,33.7984641780487 
+		... 
+		-84.3863551992191,33.7973008958369
+	&lt/coordinates&gt &lt/LinearRing&gt &lt/outerBoundaryIs&gt &lt/Polygon&gt
+&lt/Placemark&gt</code></pre>
+							<h2>Exploring the Dataset</h2>
+							<p><a href="https://geopandas.org/en/stable/">GeoPandas</a> was used to work with the Atlanta neighborhoods KML file in Python.
+							 <a href="https://python-visualization.github.io/folium/">Folium</a> was used for map visualization. 248 
+							 neighborhoods are described by the dataset. The smallest neighborhood by area is the Harvel Homes Community with 
+								an area of only 0.02 square miles. The largest neighborhood by area is Paces with an area of 3.01 square miles.
+							 </p>
+							<h2>Find Your Neighborhood</h2>
+							<iframe src="map.html" width = 100% height = 1000></iframe>
+							</div>
+					</div>
+
+				<!-- Footer -->
+				<footer id="footer">
+					<div class="inner">
+						<section>
+							<h2>Contact</h2>
+							<ul class="icons">
+								<li><a href="https://github.com/lancelu2" target = "_blank" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="https://www.linkedin.com/in/lance-lu2/" target=”_blank” class="icon brands style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
+								<li><a href="mailto:lancelu2@gmail.com" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+							</ul>
+						</section>
+						<ul class="copyright">
+							<li>&copy; Lance Lu. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+				</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/browser.min.js"></script>
+			<script src="../../assets/js/breakpoints.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<script src="../../assets/js/main.js"></script>
+
+	</body>
+</html>
