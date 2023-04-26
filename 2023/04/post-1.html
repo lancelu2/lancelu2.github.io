@@ -50,85 +50,87 @@
 						<div class="inner">
 							<!--change title-->
 							<h1>Mapping Atlanta Neighborhoods with Python</h1>
-							<p>Last Updated: April, 24, 2023</p>
+							<p>Last Updated: April 26, 2023</p>
 							<!--Insert Text-->
 							<!--Update Images-->
-							<span class="image main"><img src="../../images/pic13.jpg" alt="" /></span>
 							<p>Atlanta has over 240 neighborhoods which are grouped in 25 Neighborhood Planning Units (NPUs).
 								NPUs are "citizen advisory councils that make recommendations to the Mayor and City Council on zoning, land use, and other planning 
 								related matters" <a href = 'https://www.atlantaga.gov/government/departments/city-planning/office-of-zoning-development/neighborhood-planning-unit-npu'>[1]</a>.			
 								Let's learn a little bit more about these neighborhoods 
 								using the KML (Keyhole Markup Language) file provided by the City of Atlanta's Department of City Planning <a href = 'https://gisdata.fultoncountyga.gov/datasets/coaplangis::atlanta-neighborhoods/explore?location=33.761538%2C-84.404908%2C11.37'>[2]</a>.</p>
-							<h2>Keyhole Markup Language</h2>
-							<p>For this post, I will be using the KML file provided by the City of Atlanta.
-								Keyhole Markup Language, or KML, is a standard maintained by the Open Geospatial Consortium, Inc (OGC) 
-								to display
-								geographic data. KML is used to annotate and visualize geographic information. More information on using KML files 
-								can be found <a href = "https://developers.google.com/kml/documentation/kmlreference">here</a>.
-								The Atlanta Neighborhoods KML file has a custom schema, as shown. 19 fields are defined. For this demonstration
-								I will only be using the "SQMILES" and "NPU" fields.</p>
-							<pre><code>&lt?xml version="1.0" encoding="utf-8" ?&gt
-&ltkml xmlns="http://www.opengis.net/kml/2.2"&gt
-&ltSchema name="Atlanta_Neighborhoods" id="Atlanta_Neighborhoods"&gt
-	&ltSimpleField name="OBJECTID" type="int">&lt/SimpleField&gt
-	&ltSimpleField name="LOCALID" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="GEOTYPE" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="FULLFIPS" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="LEGALAREA" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="EFFECTDATE" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="ENDDATE" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="SRCREF" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="ACRES" type="float">&lt/SimpleField&gt
-	&ltSimpleField name="SQMILES" type="float">&lt/SimpleField&gt
-	&ltSimpleField name="OLDNAME" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="NPU" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="CREATED_USER" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="CREATED_DATE" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="LAST_EDITED_USER" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="LAST_EDITED_DATE" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="GLOBALID" type="string">&lt/SimpleField&gt
-	&ltSimpleField name="SHAPEAREA" type="float">&lt/SimpleField&gt
-	&ltSimpleField name="SHAPELEN" type="float">&lt/SimpleField&gt	
-&lt?/Schema&gt</code></pre>
-							<p>KML files contain Placemarks. Placemarks mark a position on the Earth's surface. In this file,
-								the placemarks are individual Atlanta neighborhoods. They contain the fields listed above, a name,and a
-								polygon outer boundary for each neighborhood. Here is the placemark data for Midtown, as an example.  
-							</p>
-							<pre><code>&ltPlacemark&gt
-	&ltname&gtMidtown &lt/name&gt
-	&ltStyle&gt &ltLineStyle&gt &ltcolor&gtff0000ff &lt/color&gt &lt/LineStyle&gt &ltPolyStyle&gt &ltfill&gt0 &lt/fill&gt &lt/PolyStyle&gt &lt/Style&gt
-	&ltExtendedData&gt &ltSchemaData schemaUrl="#Atlanta_Neighborhoods"&gt
-		&ltSimpleData name="OBJECTID"&gt205 &lt/SimpleData&gt
-		&ltSimpleData name="GEOTYPE"&gtNeighborhood &lt/SimpleData&gt
-		&ltSimpleData name="ACRES"&gt1048.4 &lt/SimpleData&gt
-		&ltSimpleData name="SQMILES"&gt1.64 &lt/SimpleData&gt
-		&ltSimpleData name="OLDNAME"&gtMidtown &lt/SimpleData&gt
-		&ltSimpleData name="NPU"&gtE &lt/SimpleData&gt
-		&ltSimpleData name="LAST_EDITED_USER"&gtGIS &lt/SimpleData&gt
-		&ltSimpleData name="LAST_EDITED_DATE"&gt2022/05/24 15:38:29+00 &lt/SimpleData&gt
-		&ltSimpleData name="GLOBALID"&gt{562633C6-67C7-4115-9271-3296BB64CD7F} &lt/SimpleData&gt
-		&ltSimpleData name="SHAPEAREA"&gt45668318.0819859 &lt/SimpleData&gt
-		&ltSimpleData name="SHAPELEN"&gt48934.8599914224 &lt/SimpleData&gt
-	&lt/SchemaData&gt &lt/ExtendedData&gt
-	&ltPolygon&gt &ltouterBoundaryIs&gt &ltLinearRing&gt &ltcoordinates&gt
-		-84.3863551992191,33.7973008958369 -84.3863511093318,33.7973850161323 
-		-84.3858931180985,33.7976273969386 -84.3855454474602,33.7978064108562 
-		-84.3852419375086,33.7978861867422 -84.3849403190955,33.7984641780487 
-		... 
-		-84.3863551992191,33.7973008958369
-	&lt/coordinates&gt &lt/LinearRing&gt &lt/outerBoundaryIs&gt &lt/Polygon&gt
-&lt/Placemark&gt</code></pre>
-							<h2>Exploring the Dataset</h2>
-							<p><a href="https://geopandas.org/en/stable/">GeoPandas</a> was used to work with the Atlanta neighborhoods KML file in Python.
-							 <a href="https://python-visualization.github.io/folium/">Folium</a> was used for map visualization. 248 
-							 neighborhoods are described by the dataset. The smallest neighborhood by area is the Harvel Homes Community with 
-								an area of only 0.02 square miles. The largest neighborhood by area is Paces with an area of 3.01 square miles.
-							 </p>
-							<h2>Find Your Neighborhood</h2>
-							<iframe src="map.html" width = 100% height = 1000></iframe>
-							</div>
-					</div>
+							<h2>Exploring the GEOJSON Dataset</h2>
+							<p>For this post, I will be using the GEOJSON file provided by the City of Atlanta.
+								19 fields are defined. For this demonstration
+								I will only be using the "NAME", "SHAPEAREA", "NPU", and "geometry" properties.		
+							<a href="https://geopandas.org/en/stable/">GeoPandas</a> was used to work with the Atlanta neighborhoods GEOJSON file in Python as a GeoDataFrame.
+							 <a href="https://python-visualization.github.io/folium/">Folium</a> was used for map visualization. 
+							<pre><code><b>Input:</b>
+	file_path = 'Atlanta_Neighborhoods.geojson'
+	my_map = gpd.read_file(file_path, driver='geojson')
+	print(my_map.head())
+							</code></pre>
+							<pre><code><b>Output:</b>
+   OBJECTID  LOCALID                    NAME  ...     SHAPEAREA     SHAPELEN                                           geometry
+0         7      NaN  Peachtree Heights East  ...  5.803162e+06  9738.438899  POLYGON ((-84.38746 33.82865, -84.38746 33.823...
+1         8      NaN        Mt. Gilead Woods  ...  1.550309e+06  5341.891141  POLYGON ((-84.50624 33.70161, -84.50640 33.700...
+2         9      NaN      Meadowbrook Forest  ...  3.086027e+06  7538.819011  POLYGON ((-84.50622 33.69482, -84.50620 33.694...
+3        10      NaN             Niskey Cove  ...  2.286926e+06  8814.792794  POLYGON ((-84.53479 33.70971, -84.53423 33.709...
+4        11      NaN                Oakcliff  ...  2.916579e+06  6926.383901  POLYGON ((-84.50069 33.75894, -84.49581 33.758...
+							</code></pre>
+							 248 neighborhoods are described by the dataset. Using Python we can find some summary statistics.
+							<pre><code><b>Input:</b>
+lg_nb = my_map.iloc[my_map['SHAPEAREA'].idxmax()]
+sm_nb = my_map.iloc[my_map['SHAPEAREA'].idxmin()]
+my_map['SQMILES'] = round(my_map['SHAPEAREA'] * 3.587E-8, 5)
+mean = round(my_map['SQMILES'].mean(),2)
+median = round(my_map['SQMILES'].median(), 2)
+print("The largest neighborhood is {} in NPU {}. It has an area of {} mi\u00b2".format(lg_nb['NAME'], lg_nb['NPU'], lg_nb['SQMILES']))
+print("The smallest neighborhood is {} in NPU {}. It has an area of {} mi\u00b2".format(sm_nb['NAME'], sm_nb['NPU'], sm_nb['SQMILES']))
+print('The median neighborhood size in Atlanta is {} mi\u00b2'.format(median))
+print('The mean neighborhood size in Atlanta is {} mi\u00b2'.format(mean))
+							</code></pre></p>
+							 <pre><code><b>Output:</b>
+The largest neighborhood is Paces in NPU A. It has an area of 3.01 mi²
+The smallest neighborhood is Harvel Homes Community in NPU J. It has an area of 0.02 mi²
+The median neighborhood size in Atlanta is 0.37 mi²
+The mean neighborhood size in Atlanta is 0.52 mi²
+							</code></pre>
+							Harvel Homes Community is tiny! Let's take a look at it on the map. It has three streets and 52 houses. 
+							It is touching I-20 and Frederick Douglass High School.
+							<iframe src="map_small.html" width = 100% height = 725></iframe>
+							
+							We can use a union function to combine neighborhood boundaries into an NPU boundary and find calculate some geospatial data for each NPU.
+							<pre><code><b>Input:</b>
+for i in my_map['NPU'].unique():
+	#Union of all neighborhood boundaries in NPU i
+	npu_i = unary_union(my_map[my_map["NPU"]==i]['geometry'])
+	#Add boundary to map
+	sim_geo = gpd.GeoSeries(npu_i).simplify(tolerance = 0.00001)
+	geo_j = sim_geo.to_json()
+	geo_j = folium.GeoJson(data=geo_j,
+	style_function=lambda x: {'fillColor': 'orange'}).add_to(m_npu)
 
+	#Compute NPU geospatial information
+	npu_centroid = npu_i.centroid
+	area = round(my_map[my_map["NPU"]==i]['SHAPEAREA'].sum() *  3.587E-8, 1)
+	num_hoods = len(my_map[my_map["NPU"]==i])
+	#Add data to map as markers
+	popup = '&#60b>NPU: &#60/b&#62' + i + '&#60br&#62' + str(area)+" mi\u00b2" + '&#60br&#62' + str(num_hoods)+" Neighborhoods"
+	folium.Marker(
+	location=[npu_centroid.y, npu_centroid.x],
+	popup= popup
+	).add_to(m_npu)</code></pre>
+							<iframe src="map_npu.html" width = 100% height = 725></iframe>
+							With the neighborhood boundaries, we can begin overlaying other datasets that also have geospatial information. 
+							This will be explored and demonstrated in future posts :)
+						</p>
+							
+							<h2>Find Your Neighborhood</h2>
+							<p>Open the map in a separate tab by clicking <a href = "map.html" target = "_blank">here</a>.<iframe src="map.html" width = 100% height = 725></iframe>
+								
+							</p>
+						</div>
+					</div>
 				<!-- Footer -->
 				<footer id="footer">
 					<div class="inner">
