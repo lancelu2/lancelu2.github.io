@@ -95,9 +95,11 @@ The smallest neighborhood is Harvel Homes Community in NPU J. It has an area of 
 The median neighborhood size in Atlanta is 0.37 mi²
 The mean neighborhood size in Atlanta is 0.52 mi²
 							</code></pre>
+							<p>
 							Harvel Homes Community is tiny! Let's take a look at it on the map. It has three streets and 52 houses. 
 							It is touching I-20 and Frederick Douglass High School.
-							<iframe src="map_small.html" width = 100% height = 725></iframe>
+							</p>
+							<iframe src="map_small.html" width ="500" height = "500" position = "center"></iframe>
 							
 							We can use a union function to combine neighborhood boundaries into an NPU boundary and find calculate some geospatial data for each NPU.
 							<pre><code><b>Input:</b>
@@ -120,14 +122,14 @@ for i in my_map['NPU'].unique():
 	location=[npu_centroid.y, npu_centroid.x],
 	popup= popup
 	).add_to(m_npu)</code></pre>
-							<iframe src="map_npu.html" width = 100% height = 725></iframe>
+							<iframe src="map_npu.html" width ="500" height = "500" position = "center"></iframe>
 							With the neighborhood boundaries, we can begin overlaying other datasets that also have geospatial information. 
 							This will be explored and demonstrated in future posts :)
 						</p>
 							
 							<h2>Find Your Neighborhood</h2>
-							<p>Open the map in a separate tab by clicking <a href = "map.html" target = "_blank">here</a>.<iframe src="map.html" width = 100% height = 725></iframe>
-								
+							<p>Open the map in a separate tab by clicking <a href = "map.html" target = "_blank">here</a>.
+								<iframe src="map.html" width ="500" height = "500" position = "center"></iframe>
 							</p>
 						</div>
 					</div>
@@ -147,7 +149,6 @@ for i in my_map['NPU'].unique():
 						</ul>
 					</div>
 				</footer>
-
 			</div>
 
 		<!-- Scripts -->
